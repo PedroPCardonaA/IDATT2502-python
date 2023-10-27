@@ -5,13 +5,18 @@ import random
 from PIL import Image
 import matplotlib.pyplot as plt
 
-data_transform = transforms.Compose([
+train_transform = transforms.Compose([
     transforms.Resize((224,224)),
-    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.TrivialAugmentWide(num_magnitude_bins=31),
     transforms.ToTensor()
 ])
 
-def plot_transformed_images(image_path, transforms= data_transform, n=3, seed=42, saveFile = ""):
+test_transform = transforms.Compose([
+    transforms.Resize((224,224)),
+    transforms.ToTensor()
+])
+
+def plot_transformed_images(image_path, transforms= train_transform, n=3, seed=42, saveFile = ""):
     if seed:
         torch.manual_seed(seed)
     image_path_list = list(image_path.glob("*/*/*.jpg"))
@@ -31,4 +36,8 @@ def plot_transformed_images(image_path, transforms= data_transform, n=3, seed=42
             fig.suptitle(f"Class: {image_path.parent.stem}", size=16)
             plt.savefig(saveFile / f"{image_path.stem}.png")
 
+def get_train_transform():
+    return train_transform
 
+def get_test_transform():
+    return test_transform
