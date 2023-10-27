@@ -13,7 +13,7 @@ def main():
     test_transform = transformData.get_test_transform()
     dir_path = Path.cwd() / "data"
     dataloader_train = dataLoaders.get_data_loader(dir_path / "train", train_transform)
-    dataloader_test = dataLoaders.get_data_loader(dir_path / "test", test_transform)
+    dataloader_test = dataLoaders.get_data_loader(dir_path / "test", test_transform, shuffle=False)
     img,label  = next(iter(dataloader_train))
     print(f"img.shape {img.shape} -> [batch_size, channels, height, width]")
     print(f"label.shape {label.shape} -> [batch_size]") 
