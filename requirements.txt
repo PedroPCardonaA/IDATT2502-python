@@ -1,8 +1,8 @@
-numpy==1.26.0
-pandas==2.1.1
-matplotlib==3.8.0
-torch==2.1.0
-flask==3.0.0
-torchmetrics==1.2.0
-torchvision==0.16.0
-PIL==10.1.0
+numpy
+pandas
+matplotlib
+torch
+flask
+torchmetrics
+torchvision
+Pillow
