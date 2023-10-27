@@ -4,6 +4,7 @@ import random
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
+import transformData
 
 plot_path = Path.cwd() / "plots"
 
@@ -37,6 +38,7 @@ def main():
     print(f"Current working directory is {dir_path}")
     #walk_trough_dir(dir_path)
     visualize_random_image(dir_path)
+    transformData.plot_transformed_images(dir_path, saveFile=Path.cwd() / "plots")
 
 if __name__ == "__main__":
     main()
