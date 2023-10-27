@@ -4,7 +4,11 @@ import random
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
-import transformData
+import packages.transformData as transformData
+from torchinfo import summary
+import io
+import sys
+
 
 plot_path = Path.cwd() / "plots"
 
@@ -27,7 +31,19 @@ def visualize_random_image(dir_path):
     plt.axis(False)
     plt.savefig(plot_path / f"{image_class}.png")
     
+def save_summary(model, input_size, filename):
+    output_buffer = io.StringIO()
+    sys.stdout = output_buffer
 
+    summary(model, input_size=input_size)
+    summary_str = output_buffer.getvalue()
+    sys.stdout = sys.__stdout__
+
+    out_fol = Path.cwd() / "plots"
+    out_fol.mkdir(exist_ok=True)
+    with open(out_fol / filename, "w") as f:
+        f.write(summary_str)
+    
     
 
 def main():
