@@ -47,7 +47,4 @@ class garbage_classifier_more_conv(nn.Module):
         )
 
     def forward(self, x):
-        x = self.conv_block_1(x)
-        x = self.conv_block_2(x)
-        x = self.conv_block_3(x) 
-        return self.classifier(x)
+        return self.classifier(self.conv_block3(self.conv_block_2(self.conv_block_1(x))))
