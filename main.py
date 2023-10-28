@@ -6,6 +6,8 @@ import packages.dataLoaders as dataLoaders
 import packages.models as models
 import packages.visualizeData as visualizeData
 from pathlib import Path
+import packages.loops as loops
+from timeit import default_timer as timer
 
 def main():
     """
@@ -34,6 +36,26 @@ def main():
 
     visualizeData.save_summary(model, (1,3,224,224), "model_0_summary.txt")
 
+    torch.manual_seed(42)
+    torch.cuda.manual_seed(42)
+
+    NUM_EPOCHS = 5
+
+    loss_fn = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+    start = timer()
+
+    model_0_results = loops.train(model, 
+    dataloader_train, 
+    dataloader_test, 
+    loss_fn, 
+    optimizer, 
+    NUM_EPOCHS, 
+    device)
+
+    end = timer()
+    print(f"Training time: {end - start:.3f}s")
 
     
 
