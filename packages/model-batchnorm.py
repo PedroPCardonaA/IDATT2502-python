@@ -11,6 +11,7 @@ class garbage_classifier_batchnorm(nn.Module):
             stride=1, 
             padding=1),
 
+            #Batch Normalization layer for comparing metrics to the standard model
             nn.BatchNorm2d(hidden_units),  
 
             nn.ReLU(),
@@ -20,6 +21,7 @@ class garbage_classifier_batchnorm(nn.Module):
             kernel_size=3, stride=1, 
             padding=1),
 
+            #Batch Normalization layer for comparing metrics to the standard model
             nn.BatchNorm2d(hidden_units),  
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, 
@@ -32,6 +34,8 @@ class garbage_classifier_batchnorm(nn.Module):
             kernel_size=3, 
             stride=1, 
             padding=1),
+
+            #Batch Normalization layer for comparing metrics to the standard model
             nn.BatchNorm2d(hidden_units), 
             nn.ReLU(),
             nn.Conv2d(in_channels=hidden_units, 
@@ -39,6 +43,8 @@ class garbage_classifier_batchnorm(nn.Module):
             kernel_size=3, 
             stride=1, 
             padding=1),
+
+            #Batch Normalization layer for comparing metrics to the standard model
             nn.BatchNorm2d(hidden_units),  
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, 
