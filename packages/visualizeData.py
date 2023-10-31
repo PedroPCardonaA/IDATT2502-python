@@ -8,7 +8,8 @@ import packages.transformData as transformData
 from torchinfo import summary
 import io
 import sys
-
+from typing import Dict, List
+from torchmetrics import ConfusionMatrix
 
 plot_path = Path.cwd() / "plots"
 
@@ -44,7 +45,81 @@ def save_summary(model, input_size, filename):
     with open(out_fol / filename, "w") as f:
         f.write(summary_str)
     
+
+def plot_loss_curves(results: Dict[str, List[float]], number:int = 1):
+  loss = results["train_loss"]
+  test_loss = results["test_loss"]
+
+  accuracy = results["train_acc"]
+  test_accuracy=results["test_acc"]
+
+  epochs = range(len(results["train_loss"]))
+
+  plt.figure(figsize=(15,7))
+
+  plt.subplot(1,2,1)
+  plt.plot(epochs, loss, label="train_loss")
+  plt.plot(epochs, test_loss, label="test_loss")
+  plt.title("Loss")
+  plt.xlabel("Epochs")
+
+  plt.subplot(1,2,1)
+  plt.plot(epochs,accuracy, label = "train_accuracy")
+  plt.plot(epochs,test_accuracy, label="test_accuracy")
+  plt.title("Accuracy")
+  plt.xlabel("Epochs")
+  plt.legend()
+  plt.savefig('../plots/'+ str(number)+'.jpg', bbox_inches='tight')   
+
+
+def plot_confusion_matrix(model, dataloader, class_names, device):
     
+    confusion_matrix = ConfusionMatrix(num_classes=len(class_names), task="multiclass")
+    model.eval()
+
+    predicted_labels = []
+    true_labels = []
+
+    with torch.no_grad():
+        for images, labels in dataloader:
+            images = images.to(device)
+            labels = labels.to(device)
+            outputs = model(images)
+            _, preds = torch.max(outputs, 1)  # Assuming classification is along dim 1
+
+            predicted_labels.extend(preds.tolist())
+            true_labels.extend(labels.tolist())
+
+    # Convert indices to class labels
+    predicted_tensor = torch.tensor(predicted_labels)
+    true_tensor = torch.tensor(true_labels)
+
+    # Update the confusion matrix with predicted and true labels (as tensors)
+    confusion_matrix.update(predicted_tensor, true_tensor)
+
+    # Compute the confusion matrix
+    matrix = confusion_matrix.compute()
+    matrix_np = matrix.numpy()
+
+    # Normalize the matrix by dividing each value by the column sum
+    normalized_matrix = matrix_np / matrix_np.sum(axis=0, keepdims=True)
+
+    # Create a custom diverging colormap
+    cmap = sns.diverging_palette(240, 10, as_cmap=True)
+
+    # Create a heatmap using seaborn with the custom colormap
+    plt.figure(figsize=(10, 7))
+    sns.heatmap(normalized_matrix, annot=True, cmap=cmap)
+
+    # Set class names as labels on x and y axes
+    plt.xticks(ticks=np.arange(len(class_names)) + 0.5, labels=class_names, rotation=45)
+    plt.yticks(ticks=np.arange(len(class_names)) + 0.5, labels=class_names, rotation=0)
+
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+    plt.title("Confusion Matrix based on Column Sums")
+    plt.show()
+
 
 def main():
     """

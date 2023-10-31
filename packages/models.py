@@ -54,3 +54,50 @@ class garbage_classifier(nn.Module):
         return self.classifier(self.conv_block_2(self.conv_block_1(x)))
 
         
+class garbage_classifier_5L_attention(nn.Module):
+    def __init__(self, input_shape:int, hidden_units:int, output_shape:int):
+        super().__init__()
+
+        self.conv_block_1 = nn.Sequential(
+            nn.Conv2d(input_shape, hidden_units, 3, 1, 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
+        )
+
+        self.conv_block_2 = nn.Sequential(
+            nn.Conv2d(hidden_units, hidden_units * 2, 3, 1, 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
+        )
+
+        self.conv_block_3 = nn.Sequential(
+            nn.Conv2d(hidden_units * 2, hidden_units * 4, 3, 1, 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
+        )
+
+        self.conv_block_4 = nn.Sequential(
+            nn.Conv2d(hidden_units * 4, hidden_units * 4, 3, 1, 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
+        )
+
+        self.conv_block_5 = nn.Sequential(
+            nn.Conv2d(hidden_units * 4, hidden_units * 4, 3, 1, 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
+        )
+
+        self.attention = nn.Sequential(
+            nn.Conv2d(hidden_units * 4, hidden_units * 4, 1, 1, 0),
+            nn.Sigmoid()
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(hidden_units * 4 * 7 * 7, output_shape)
+        )
+
+    def forward(self, x):
+        x = self.conv_block_5(self.conv_block_4(self.conv_block_3(self.conv_block_2(self.conv_block_1(x)))))
+        return self.classifier(x * self.attention(x))
