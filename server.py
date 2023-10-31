@@ -6,15 +6,17 @@ import io
 import numpy as np
 from PIL import Image
 from torchvision import transforms
+from pathlib import Path
 app = Flask(__name__)
 
 # Sample data (in-memory storage)
-model = models.garbage_classifier_5L_attention(input_shape=3, hidden_units=64, output_shape=6)
-model.load_state_dict(torch.load("models/model5l.pth"))
+model = models.garbage_classifier_5L_attention(input_shape=3, hidden_units=64, output_shape=8)
+model.load_state_dict(torch.load("models/model5l.pth",map_location=torch.device('cpu')))
 preprocess = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor()
 ])
+classes = ['cardboard', 'food', 'glass', 'hazardous','metal', 'paper', 'plastic', 'trash']
 
 # PUT endpoint
 @app.route('/data/<key>', methods=['PUT'])
@@ -55,7 +57,8 @@ def post_image():
             print(result)
             print(result.shape)
             percent = nn.functional.softmax(result, dim=1)[0] * 100
-            return str(result.argmax(1).item()), str(percent[result.argmax(1).item()].item())
+            _, preds = torch.max(result, 1)  # Assuming classification is along dim 1
+            return [str(classes[preds.item()]), str(percent.max().item())]
 
         #Convert the NumPy array to a PyTorch Tensor
 
