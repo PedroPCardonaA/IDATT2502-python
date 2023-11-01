@@ -26,7 +26,7 @@ def main():
     print(f"classes: {classes}")
 
     torch.manual_seed(42)
-    model = models.garbage_classifier(input_shape=3, hidden_units=64, output_shape=len(classes)).to(device)
+    model = models.garbage_classifier_5L_attention_with_batch_and_dropout(input_shape=3, hidden_units=64, output_shape=len(classes)).to(device)
     print(model)
 
     image_batch, label_batch = next(iter(dataloader_train))
@@ -36,9 +36,11 @@ def main():
 
     visualizeData.save_summary(model, (1,3,224,224), "model_0_summary.txt")
 
+    """
     torch.manual_seed(42)
     torch.cuda.manual_seed(42)
 
+    
     NUM_EPOCHS = 5
 
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -56,6 +58,7 @@ def main():
 
     end = timer()
     print(f"Training time: {end - start:.3f}s")
+    """
 
     
 

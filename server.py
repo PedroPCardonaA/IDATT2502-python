@@ -81,4 +81,4 @@ def post_image():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,host="10.24.6.179", port=8080)
+    app.run(debug=True,host="10.24.39.248", port=8080)
