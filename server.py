@@ -54,9 +54,9 @@ def post_image():
         
         #save image in forlder 
         if random.random() < 0.8:
-            folder_path = Path.cwd() / "photos" / category
+            folder_path = Path.cwd() / "photos" / "train" /category
         else:
-            folder_path = Path.cwd() / "photos" / category
+            folder_path = Path.cwd() / "photos" / "test" /category
 
         #file.save(folder_path / str(random.randint(0,10000000000000).__str__()+".jpg"))
 
