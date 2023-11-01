@@ -11,13 +11,13 @@ import random
 app = Flask(__name__)
 
 # Sample data (in-memory storage)
-model = models.garbage_classifier_5L_attention(input_shape=3, hidden_units=64, output_shape=6)
-model.load_state_dict(torch.load("models/model(4).pth",map_location=torch.device('cpu')))
+model = models.garbage_classifier_5L_attention_with_batch_and_dropout(input_shape=3, hidden_units=64, output_shape=8)
+model.load_state_dict(torch.load("models/modelX.pth",map_location=torch.device('cpu')))
 preprocess = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor()
 ])
-classes = ['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
+classes =['cardboard', 'food', 'glass', 'hazardous', 'metal', 'paper', 'plastic', 'trash']
 
 # PUT endpoint
 @app.route('/data/<key>', methods=['PUT'])
@@ -54,9 +54,9 @@ def post_image():
         
         #save image in forlder 
         if random.random() < 0.8:
-            folder_path = Path.cwd() / "photos" / category
+            folder_path = Path.cwd() / "photos" / "train" /category
         else:
-            folder_path = Path.cwd() / "photos" / category
+            folder_path = Path.cwd() / "photos" / "test" /category
 
         #file.save(folder_path / str(random.randint(0,10000000000000).__str__()+".jpg"))
 
