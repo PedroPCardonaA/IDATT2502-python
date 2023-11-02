@@ -8,3 +8,4 @@ torchvision
 Pillow
 torchinfo
 tqdm
+onnx
